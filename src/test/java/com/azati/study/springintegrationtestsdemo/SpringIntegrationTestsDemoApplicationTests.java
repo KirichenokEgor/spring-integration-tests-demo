@@ -9,15 +9,17 @@ import com.azati.study.springintegrationtestsdemo.exception.MyItemNotFoundExcept
 import com.azati.study.springintegrationtestsdemo.exception.ValidationException;
 import com.azati.study.springintegrationtestsdemo.repository.MyItemRepository;
 import com.azati.study.springintegrationtestsdemo.service.DateTimeService;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.BDDAssertions.catchThrowable;
@@ -25,7 +27,6 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RequiredArgsConstructor
 class SpringIntegrationTestsDemoApplicationTests {
 	private static final int ITEM_NUMBER_1 = 123;
 	private static final int ITEM_NUMBER_2 = 234;
@@ -34,10 +35,13 @@ class SpringIntegrationTestsDemoApplicationTests {
 	private static final String NOT_FOUND_MESSAGE = "MyItem with id=%s doesn't exist";
 	private static final String ALREADY_PREPARED_OR_CLOSED_MESSAGE = "MyItem with id=%s is already prepared for closing or closed (wrong status)";
 	private static final String CANT_BE_CLOSED_MESSAGE = "MyItem with id=%s can't be closed (wrong status)";
-	private static final LocalDateTime ITEM_CHANGED_DATE_TIME_1 = LocalDateTime.now();
-	private static final LocalDateTime ITEM_CHANGED_DATE_TIME_2 = LocalDateTime.now().plusDays(1L);
+    private static final LocalDateTime ITEM_CHANGED_DATE_TIME_1 = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+    private static final LocalDateTime ITEM_CHANGED_DATE_TIME_2 = ITEM_CHANGED_DATE_TIME_1.plusDays(1L);
 
+    @Autowired
 	MyItemRepository repository;
+
+    @Autowired
 	MyItemController controller;
 
 	@MockBean
@@ -228,7 +232,7 @@ class SpringIntegrationTestsDemoApplicationTests {
 		then(receivedItem.getId()).isEqualTo(item.getId());
 		then(receivedItem.getNumber()).isEqualTo(item.getNumber());
 		then(receivedItem.getName()).isEqualTo(item.getName());
-		then(receivedItem.getStatus()).isEqualTo(item.getStatus());
+		then(receivedItem.getStatus()).isEqualTo(item.getStatus().name());
 		then(receivedItem.getLastChangedDateTime()).isEqualTo(item.getLastChangedDateTime());
 	}
 

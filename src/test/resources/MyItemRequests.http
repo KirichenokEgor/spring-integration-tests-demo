@@ -12,14 +12,14 @@ PUT http://localhost:8080/MyItem/1
 Content-Type: application/json
 
 {
-  "name": "name1",
-  "number": 123
+  "name": "name2",
+  "number": 234
 }
 
 ###
 
 
-GET http://localhost:8080/MyItem
+GET http://localhost:8080/MyItem/1
 Content-Type: application/json
 
 ###
